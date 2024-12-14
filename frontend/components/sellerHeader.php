@@ -10,7 +10,7 @@ $username = SessionManager::getUsername();
     <link rel="stylesheet" href="../assets/css/main.css">
     <nav class="navbar">
         <div class="logo">
-            <a href="/frontend/pages/index.php">PropertyConnect</a>
+            <img src="../../assets/logo.png" href="PropertyConnect">
         </div>
         <div class="nav-links">
             <a href="../index.php">Home</a>
