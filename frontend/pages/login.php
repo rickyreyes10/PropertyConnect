@@ -5,7 +5,7 @@ SessionManager::init();
 
 //if already logged in, redirect to dashboard
 if (SessionManager::isLoggedIn()) {
-    header('Location: /~rreyespena1/wp/pw/p4/frontend/pages/seller/dashboard.php');
+    header('Location: ../pages/seller/dashboard.php');
     exit;
 }
 

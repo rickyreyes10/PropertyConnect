@@ -13,13 +13,13 @@ $username = SessionManager::getUsername();
             <a href="/frontend/pages/index.php">PropertyConnect</a>
         </div>
         <div class="nav-links">
-            <a href="/~rreyespena1/wp/pw/p4/frontend/pages/index.php">Home</a>
-            <a href="/~rreyespena1/wp/pw/p4/frontend/pages/payment-info.php">Payment Information</a>
+            <a href="../index.php">Home</a>
+            <a href="../payment-info.php">Payment Information</a>
             <?php if ($isLoggedIn): ?>
                 <span>Welcome, <?php echo htmlspecialchars($username); ?></span>
-                <a href="/~rreyespena1/wp/pw/p4/frontend/pages/logout.php" class="logout-btn">Logout</a>
+                <a href="../logout.php" class="logout-btn">Logout</a>
             <?php else: ?>
-                <a href="/~rreyespena1/wp/pw/p4/frontend/pages/login.php">Login</a>
+                <a href="../login.php">Login</a>
             <?php endif; ?>
         </div>
     </nav>

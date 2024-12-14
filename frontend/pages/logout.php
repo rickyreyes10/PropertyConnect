@@ -8,6 +8,6 @@ SessionManager::init();
 SessionManager::logout();
 
 // Redirect to home page
-header('Location: /~rreyespena1/wp/pw/p4/frontend/pages/index.php');
+header('Location: ../pages/index.php');
 exit;
 ?>

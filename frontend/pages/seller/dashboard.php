@@ -6,7 +6,7 @@ require_once '../../../backend/config/db.php';
 SessionManager::init();
 
 if (!SessionManager::isLoggedIn()) {
-    header('Location: /~rreyespena1/wp/pw/p4/frontend/pages/login.php');
+    header('Location: ../pages/login.php');
     exit;
 }
 
