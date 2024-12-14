@@ -1,6 +1,5 @@
 * {
     box-sizing: border-box;
-
 }
 
 body {
@@ -23,18 +22,7 @@ header {
     padding: 1rem 2rem;
     background-color: #4facfe; /* Light blue background */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.nav-links a {
-    color: white;
-    text-decoration: none;
-    margin-left: 1rem;
-    font-weight: bold;
-    transition: color 0.3s ease;
-}
-
-.nav-links a:hover {
-    color: #b3e0ff; /* Slightly lighter blue on hover */
+    position: relative;
 }
 
 .logo img {
@@ -43,6 +31,32 @@ header {
     object-fit: contain;
 }
 
+.nav-links {
+    display: flex;
+    gap: 2rem; /* Spacing between the links */
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #b3e0ff; /* Slightly lighter blue on hover */
+}
+
+.welcome-message {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+/* Hero Section */
 .hero {
     text-align: center;
     padding: 4rem 2rem;
