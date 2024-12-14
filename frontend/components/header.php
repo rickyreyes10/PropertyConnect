@@ -13,17 +13,17 @@ $username = SessionManager::getUsername();
     <link rel="stylesheet" href="../assets/css/main.css">
     <nav class="navbar">
         <div class="logo">
-            <a href="/frontend/pages/index.php">PropertyConnect</a>
+            <img src="../assets/logo.png" href="PropertyConnect">
         </div>
         <div class="nav-links">
-            <a href="/~rreyespena1/wp/pw/p4/frontend/pages/index.php">Home</a>
+            <a href="../pages/index.php">Home</a>
             <?php if ($isLoggedIn): ?>
                 <span>Welcome, <?php echo htmlspecialchars($username); ?></span>
-                <a href="/~rreyespena1/wp/pw/p4/frontend/pages/logout.php" class="logout-btn">Logout?</a>
-                <a href="/~rreyespena1/wp/pw/p4/frontend/pages/seller/dashboard.php">Seller Dashboard</a>
+                <a href="../pages/logout.php" class="logout-btn">Logout?</a>
+                <a href="../pages/seller/dashboard.php">Seller Dashboard</a>
             <?php else: ?>
-                <a href="/~rreyespena1/wp/pw/p4/frontend/pages/login.php">Login</a>
-                <a href="/~rreyespena1/wp/pw/p4/frontend/pages/register.php">Register</a>
+                <a href="../pages/login.php">Login</a>
+                <a href="../pages/register.php">Register</a>
             <?php endif; ?>
         </div>
     </nav>
