@@ -25,8 +25,9 @@ $properties = $property->getPropertiesByUserId($userId);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="img-src 'self' data: https: http:;">
     <title>Seller Dashboard - PropertyConnect</title>
-    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="/~pkim35/WP/PW/Project4/PropertyConnect/frontend/assets/css/main.css" type="text/css">
     <link rel="stylesheet" href="../../assets/css/dashboard.css">
 </head>
 <body>
@@ -38,25 +39,35 @@ $properties = $property->getPropertiesByUserId($userId);
         <div class="property-grid">
             <!-- Add Property Card -->
             <div class="property-card add-property">
-                <a href="#" class="add-property-link" id="addPropertyBtn">
+                <div class="add-property-button" id="addPropertyBtn">
                     <div class="add-icon">+</div>
                     <p>Add New Property</p>
-                </a>
+                </div>
             </div>
 
             <!-- Property Cards -->
             <?php if ($properties): ?>
+                <!-- Debug: Print image URLs -->
+                <?php foreach ($properties as $property): 
+                    error_log("Image URL for property " . $property['PropertyID'] . ": " . $property['ImageURL']);
+                endforeach; ?>
+                
                 <?php foreach ($properties as $property): ?>
                     <div class="property-card" data-property-id="<?php echo $property['PropertyID']; ?>">
-                        <img src="<?php echo htmlspecialchars($property['ImageURL']); ?>" alt="Property Image">
+                        <img 
+                            src="<?php echo htmlspecialchars($property['ImageURL']); ?>" 
+                            alt="Property Image" 
+                            onerror="this.src='../../assets/default-property.jpg';" 
+                            style="width: 100%; height: 200px; object-fit: cover;"
+                        >
                         <div class="property-info">
                             <h3><?php echo htmlspecialchars($property['Location']); ?></h3>
-                            <p class="price">$<?php echo number_format($property['Price']); ?></p>
-                            <p class="tax">Property Tax (7%): $<?php echo number_format($property->calculatePropertyTax($property['Tax'])); ?></p>
+                            <p class="price">$<?php echo number_format($property['PropertyTax']); ?></p>
+                            <p class="tax">Property Tax (7%): $<?php echo number_format($property['PropertyTax'] * 0.07, 2); ?></p>
                             <p class="details">
                                 <?php echo htmlspecialchars($property['Bedrooms']); ?> beds • 
                                 <?php echo htmlspecialchars($property['Bathrooms']); ?> baths • 
-                                <?php echo htmlspecialchars($property['SquareFootage']); ?> sqft
+                                <?php echo htmlspecialchars($property['FloorPlan']); ?> sqft
                             </p>
                             <div class="property-actions">
                                 <button class="btn-update" data-property-id="<?php echo $property['PropertyID']; ?>">Update</button>
@@ -133,14 +144,20 @@ $properties = $property->getPropertiesByUserId($userId);
                 </div>
 
                 <div class="form-group">
-                    <label for="tax">Property Value ($)</label>
-                    <input type="number" id="tax" name="tax" required>
+                    <label for="propertyTax">Property Value ($)</label>
+                    <input type="number" id="propertyTax" name="propertyTax" required>
                     <p id="taxEstimate" class="tax-estimate"></p>
                 </div>
 
                 <div class="form-group">
                     <label for="imageURL">Image URL</label>
-                    <input type="url" id="imageURL" name="imageURL" required>
+                    <input type="url" id="imageURL" name="imageURL" required 
+                           placeholder="Enter a valid image URL (e.g., https://example.com/image.jpg)"
+                           pattern="https?://.+"
+                           title="Please enter a valid HTTP or HTTPS image URL">
+                    <small class="form-text text-muted">
+                        Tip: Right-click on an image online and select "Copy image address" to get a valid URL
+                    </small>
                 </div>
 
                 <button type="submit" class="submit-btn">Add Property</button>
@@ -214,8 +231,8 @@ $properties = $property->getPropertiesByUserId($userId);
                 </div>
 
                 <div class="form-group">
-                    <label for="updateTax">Property Value ($)</label>
-                    <input type="number" id="updateTax" name="tax" required>
+                    <label for="updatePropertyTax">Property Value ($)</label>
+                    <input type="number" id="updatePropertyTax" name="PropertyTax" required>
                     <p id="updateTaxEstimate" class="tax-estimate"></p>
                 </div>
 

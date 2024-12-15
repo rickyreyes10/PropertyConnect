@@ -17,11 +17,13 @@
     cursor: pointer;
     overflow: hidden;
     transition: transform 0.2s;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .property-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
 .add-property {
@@ -31,12 +33,17 @@
     min-height: 300px;
     background: #f8f9fa;
     border: 2px dashed #ccc;
+    cursor: default;
 }
 
-.add-property-link {
-    text-decoration: none;
-    color: #666;
-    text-align: center;
+.add-property-button {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: inherit;
 }
 
 .add-icon {
@@ -48,29 +55,38 @@
 .modal {
     display: none;
     position: fixed;
-    top: 0;
+    z-index: 1000;
     left: 0;
+    top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
+    background-color: rgba(0,0,0,0.5);
 }
 
 .modal-content {
-    position: relative;
-    background-color: #fff;
-    margin: 15% auto;
+    background-color: #fefefe;
+    margin: 5% auto;
     padding: 20px;
-    width: 70%;
-    max-width: 500px;
-    border-radius: 8px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    border-radius: 5px;
 }
 
 .close {
-    position: absolute;
-    right: 20px;
-    top: 10px;
+    color: #aaa;
+    float: right;
     font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
     cursor: pointer;
 }
 
@@ -107,4 +123,102 @@
     color: #666;
     font-size: 0.9em;
     margin-top: 5px;
+}
+
+.property-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px 8px 0 0;
+    background-color: #f8f9fa;
+}
+
+.property-image {
+    position: relative;
+    width: 100%;
+    min-height: 200px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.property-info {
+    padding: 15px;
+}
+
+.property-info h3 {
+    margin: 0 0 10px 0;
+    color: #2c3e50;
+    font-size: 1.2em;
+}
+
+.property-info .price {
+    font-size: 1.4em;
+    color: #2c3e50;
+    font-weight: bold;
+    margin: 0 0 5px 0;
+}
+
+.property-info .tax {
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}
+
+.property-info .details {
+    background: #f8f9fa;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 0.95em;
+    color: #495057;
+    margin: 10px 0;
+}
+
+.property-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 15px;
+    justify-content: flex-end;
+}
+
+.property-actions button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-update {
+    background-color: #007bff;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+}
+
+.btn-delete {
+    background-color: #dc3545;
+    color: white;
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+}
+
+.btn-update:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+.btn-delete:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+.btn-update:active,
+.btn-delete:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }

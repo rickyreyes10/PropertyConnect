@@ -34,17 +34,17 @@ CREATE TABLE User (
 CREATE TABLE Property (
     PropertyID INT AUTO_INCREMENT PRIMARY KEY,
     UserID INT NOT NULL,
-    Location VARCHAR(255),
-    Age INT,
-    FloorPlan VARCHAR(255),
-    Bedrooms INT,
-    Bathrooms INT,
-    Garden BOOLEAN,
-    Parking BOOLEAN,
-    ProximityToFacilities TEXT,
-    ProximityToMainRoads TEXT,
-    PropertyTax DECIMAL(10,2),
-    ImageURL VARCHAR(255),
+    Location VARCHAR(255) NOT NULL,
+    Age INT NOT NULL,
+    FloorPlan VARCHAR(255) NOT NULL,
+    Bedrooms INT NOT NULL,
+    Bathrooms INT NOT NULL,
+    Garden BOOLEAN NOT NULL,
+    Parking BOOLEAN NOT NULL,
+    ProximityToFacilities TEXT NOT NULL,
+    ProximityToMainRoads TEXT NOT NULL,
+    PropertyTax DECIMAL(10,2) NOT NULL,
+    Description TEXT NOT NULL,
     FOREIGN KEY (UserID) REFERENCES User(UserID)
 );
 

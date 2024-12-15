@@ -6,13 +6,17 @@ document.addEventListener('DOMContentLoaded', function () {
     const closeButtons = document.querySelectorAll('.close');
 
     // Add Property Modal handling
-    addPropertyBtn.onclick = function () {
+    addPropertyBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
         addModal.style.display = "block";
-    }
+    });
 
     // Update Property Modal handling
     document.querySelectorAll('.btn-update').forEach(button => {
         button.addEventListener('click', function () {
+            event.preventDefault();
+            event.stopPropagation();
             const propertyId = this.dataset.propertyId;
             populateUpdateForm(propertyId);
             updateModal.style.display = "block";
@@ -21,7 +25,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Close modal functionality
     closeButtons.forEach(button => {
-        button.onclick = function () {
+        button.onclick = function (event) {
+            event.preventDefault();
+            event.stopPropagation();
             addModal.style.display = "none";
             updateModal.style.display = "none";
         }
@@ -30,6 +36,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Close modal when clicking outside
     window.onclick = function (event) {
         if (event.target == addModal || event.target == updateModal) {
+            event.preventDefault();
+            event.stopPropagation();
             addModal.style.display = "none";
             updateModal.style.display = "none";
         }
@@ -44,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const formData = new FormData(addPropertyForm);
             formData.append('action', 'add');
 
-            fetch('/~rreyespena1/wp/pw/p4/backend/routes/addPropertyRoutes.php', {
+            fetch('../../../backend/routes/addPropertyRoutes.php', {
                 method: 'POST',
                 body: formData
             })
@@ -73,22 +81,43 @@ document.addEventListener('DOMContentLoaded', function () {
             const formData = new FormData(updatePropertyForm);
             formData.append('action', 'update');
 
-            fetch('/~rreyespena1/wp/pw/p4/backend/routes/updatePropertyRoutes.php', {
+            // Debug: Log what we're sending
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+            }
+
+            fetch('../../../backend/routes/updatePropertyRoutes.php', {
                 method: 'POST',
                 body: formData
             })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text().then(text => {
+                        console.log('Raw server response:', text); // Debug: Log raw response
+                        try {
+                            return JSON.parse(text);
+                        } catch (e) {
+                            console.error('Error parsing JSON:', text);
+                            throw new Error('Invalid JSON response from server: ' + text);
+                        }
+                    });
+                })
                 .then(data => {
+                    console.log('Parsed response:', data); // Debug: Log parsed data
                     if (data.success) {
                         alert('Property updated successfully!');
-                        window.location.reload(); // Refresh to show updates
+                        window.location.reload();
                     } else {
                         alert(data.message || 'Failed to update property');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Failed to update property: ' + error.message);
+                    // More detailed error message
+                    alert('Failed to update property. Error: ' + error.message + 
+                          '\nCheck the browser console for more details.');
                 });
         });
     }
@@ -104,13 +133,18 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // For making the entire card clickable (except the update/delete buttons area)
+    // For making the entire card clickable (except the add property card)
     document.querySelectorAll('.property-card').forEach(card => {
         card.addEventListener('click', function (e) {
+            // Skip if this is the add property card
+            if (this.classList.contains('add-property')) {
+                return;
+            }
+            
             // Don't navigate if clicking on buttons
             if (!e.target.closest('.property-actions')) {
                 const propertyId = this.dataset.propertyId;
-                window.location.href = `/~rreyespena1/wp/pw/p4/frontend/pages/seller/property-details.php?id=${propertyId}`;
+                window.location.href = `property-details.php?id=${propertyId}`;
             }
         });
     });
@@ -148,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function () {
         formData.append('action', 'get');
         formData.append('propertyId', propertyId);
 
-        fetch('/~rreyespena1/wp/pw/p4/backend/routes/propertyRoutes.php', {
+        fetch('../../../backend/routes/propertyRoutes.php', {
             method: 'POST',
             body: formData
         })
@@ -165,7 +199,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.getElementById('updateParking').value = data.property.Parking;
                     document.getElementById('updateProximityFacilities').value = data.property.ProximityFacilities;
                     document.getElementById('updateProximityRoads').value = data.property.ProximityRoads;
-                    document.getElementById('updateTax').value = data.property.Tax;
+                    document.getElementById('updatePropertyTax').value = data.property.PropertyTax;
                     document.getElementById('updateImageURL').value = data.property.ImageURL;
                 } else {
                     alert('Failed to load property details');
@@ -191,8 +225,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // For Add Property Form
-    updateTaxDisplay('tax', 'taxEstimate');
+    updateTaxDisplay('propertyTax', 'taxEstimate');
 
     // For Update Property Form
-    updateTaxDisplay('updateTax', 'updateTaxEstimate');
+    updateTaxDisplay('updatePropertyTax', 'updateTaxEstimate');
 });

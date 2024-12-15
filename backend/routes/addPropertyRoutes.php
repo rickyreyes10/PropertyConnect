@@ -19,32 +19,38 @@ try {
         $action = $_POST['action'] ?? '';
 
         switch($action) {
-            case 'add':  // Changed from 'addProperty' to 'add' to match frontend
+            case 'add':
                 try {
                     // Basic input validation
                     $requiredFields = ['location', 'age', 'floorPlan', 'bedrooms', 
-                                     'bathrooms', 'garden', 'parking', 
-                                     'proximityFacilities', 'proximityRoads', 
-                                     'tax', 'imageURL'];
+                                      'bathrooms', 'garden', 'parking', 
+                                      'proximityFacilities', 'proximityRoads', 
+                                      'propertyTax', 'imageURL'];
                     
                     foreach ($requiredFields as $field) {
-                        if (!isset($_POST[$field]) || empty($_POST[$field])) {
+                        if (!isset($_POST[$field])) {
                             throw new Exception("Missing required field: $field");
                         }
                     }
 
+                    // Convert string boolean values to actual booleans
+                    $garden = filter_var($_POST['garden'], FILTER_VALIDATE_BOOLEAN);
+                    $parking = filter_var($_POST['parking'], FILTER_VALIDATE_BOOLEAN);
+                    $proximityToFacilities = filter_var($_POST['proximityFacilities'], FILTER_VALIDATE_BOOLEAN);
+                    $proximityToMainRoads = filter_var($_POST['proximityRoads'], FILTER_VALIDATE_BOOLEAN);
+
                     $result = $property->addProperty(
                         SessionManager::getUserID(),
                         $_POST['location'],
-                        $_POST['age'],
+                        intval($_POST['age']),
                         $_POST['floorPlan'],
-                        $_POST['bedrooms'],
-                        $_POST['bathrooms'],
-                        $_POST['garden'],
-                        $_POST['parking'],
-                        $_POST['proximityFacilities'],
-                        $_POST['proximityRoads'],
-                        $_POST['tax'],
+                        intval($_POST['bedrooms']),
+                        intval($_POST['bathrooms']),
+                        $garden,
+                        $parking,
+                        $proximityToFacilities,
+                        $proximityToMainRoads,
+                        floatval($_POST['propertyTax']),
                         $_POST['imageURL']
                     );
                     

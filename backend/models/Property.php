@@ -10,17 +10,29 @@ class Property {
     }
 
     //this method is used to add a property to the database
-    public function addProperty($userID, $location, $age, $floorPlan, $bedrooms, $bathrooms, $garden, $parking, $proximityFacilities, $proximityRoads, $tax, $imageURL) {
+    public function addProperty($userID, $location, $age, $floorPlan, $bedrooms, $bathrooms, $garden, $parking, $proximityToFacilities, $proximityToMainRoads, $propertyTax, $imageURL) {
         try {
+            // Download and store image locally
+            $imageData = file_get_contents($imageURL);
+            $fileName = uniqid() . '.jpg';
+            $localPath = '../uploads/' . $fileName;
+            file_put_contents($localPath, $imageData);
+            $imageURL = '/~pkim35/WP/PW/Project4/PropertyConnect/backend/uploads/' . $fileName;
             //prepare the SQL statement to insert a new property into the database
-            $stmt = $this->conn->prepare("INSERT INTO Property (UserID, Location, Age, FloorPlan, Bedrooms, Bathrooms, Garden, Parking, ProximityFacilities, ProximityRoads, Tax, ImageURL) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $this->conn->prepare("INSERT INTO Property (UserID, Location, Age, FloorPlan, Bedrooms, Bathrooms, Garden, Parking, ProximityFacilities, ProximityRoads, PropertyTax, ImageURL) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             
             if (!$stmt) { //check if the statement failed
                 throw new Exception("Prepare failed: " . $this->conn->error); //throw an exception if the statement failed
             }
 
+            // Convert boolean values to '1' or '0' strings
+            $gardenValue = $garden ? '1' : '0';
+            $parkingValue = $parking ? '1' : '0';
+            $proximityFacilitiesValue = $proximityToFacilities ? '1' : '0';
+            $proximityRoadsValue = $proximityToMainRoads ? '1' : '0';
+
             //bind the parameters to the statement
-            $stmt->bind_param("isisiiibisss", $userID, $location, $age, $floorPlan, $bedrooms, $bathrooms, $garden, $parking, $proximityFacilities, $proximityRoads, $tax, $imageURL);
+            $stmt->bind_param("isisiissssds", $userID, $location, $age, $floorPlan, $bedrooms, $bathrooms, $gardenValue, $parkingValue, $proximityFacilitiesValue, $proximityRoadsValue, $propertyTax, $imageURL);
             
             //execute the statement
             $result = $stmt->execute();
@@ -77,25 +89,54 @@ class Property {
 
     // Update property details
     //this method is used to update the details of a property
-    public function updateProperty($propertyId, $location, $age, $floorPlan, $bedrooms, $bathrooms, $garden, $parking, $proximityFacilities, $proximityRoads, $tax, $imageURL) {
+    public function updateProperty($propertyId, $location, $age, $floorPlan, $bedrooms, $bathrooms, $garden, $parking, $proximityFacilities, $proximityRoads, $propertyTax, $imageURL) {
         try {
-            //prepare the SQL statement to update the details of a property in the database where the propertyID is equal to the propertyID passed to the function
-            $stmt = $this->conn->prepare("UPDATE Property SET Location = ?, Age = ?, FloorPlan = ?, Bedrooms = ?, Bathrooms = ?, Garden = ?, Parking = ?, ProximityFacilities = ?, ProximityRoads = ?, Tax = ?, ImageURL = ? WHERE PropertyID = ?");
-
-            //bind the parameters to the statement
-            $stmt->bind_param("sisiiibisssi", $location, $age, $floorPlan, $bedrooms, $bathrooms, $garden, $parking, $proximityFacilities, $proximityRoads, $tax, $imageURL, $propertyId);
+            $stmt = $this->conn->prepare("UPDATE Property SET 
+                Location = ?, 
+                Age = ?, 
+                FloorPlan = ?, 
+                Bedrooms = ?, 
+                Bathrooms = ?, 
+                Garden = ?, 
+                Parking = ?, 
+                ProximityFacilities = ?, 
+                ProximityRoads = ?, 
+                PropertyTax = ?, 
+                ImageURL = ? 
+                WHERE PropertyID = ?");
             
-            //execute the statement
-            $result = $stmt->execute();
+            if (!$stmt) {
+                throw new Exception("Prepare failed: " . $this->conn->error);
+            }
 
-            //close the statement
+            // Convert boolean values to '1' or '0' strings
+            $gardenValue = $garden ? '1' : '0';
+            $parkingValue = $parking ? '1' : '0';
+            $proximityFacilitiesValue = $proximityFacilities ? '1' : '0';
+            $proximityRoadsValue = $proximityRoads ? '1' : '0';
+
+            $stmt->bind_param("sisiiiiisssi", 
+                $location, 
+                $age, 
+                $floorPlan, 
+                $bedrooms, 
+                $bathrooms, 
+                $gardenValue, 
+                $parkingValue, 
+                $proximityFacilitiesValue, 
+                $proximityRoadsValue, 
+                $propertyTax, 
+                $imageURL,
+                $propertyId
+            );
+            
+            $result = $stmt->execute();
             $stmt->close();
             
-            //return the result of the statement which is a boolean value (true or false)
             return $result;
-        } catch (Exception $e) { //catch any exceptions
-            error_log("Error updating property: " . $e->getMessage()); //log the error message
-            throw $e; //throw the exception
+        } catch (Exception $e) {
+            error_log("Error updating property: " . $e->getMessage());
+            throw $e;
         }
     }
 

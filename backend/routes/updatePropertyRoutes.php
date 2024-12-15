@@ -1,5 +1,11 @@
 <?php 
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// Ensure no whitespace or other output before headers
+if (ob_get_level()) ob_end_clean();
 header('Content-Type: application/json');
 
 require_once '../models/Property.php';
@@ -17,58 +23,69 @@ try {
         Auth::requireLogin();
 
         $action = $_POST['action'] ?? '';
+        error_log("Action received: " . $action);
 
         switch($action) {
             case 'update':
                 try {
-                    // Check if propertyId is provided
-                    if (!isset($_POST['propertyId']) || empty($_POST['propertyId'])) {
-                        throw new Exception("Property ID is required");
-                    }
+                    // Debug output
+                    error_log("Raw POST data: " . file_get_contents('php://input'));
+                    error_log("Received POST data: " . print_r($_POST, true));
 
                     // Basic input validation
-                    $requiredFields = ['location', 'age', 'floorPlan', 'bedrooms', 
+                    $requiredFields = ['propertyId', 'location', 'age', 'floorPlan', 'bedrooms', 
                                      'bathrooms', 'garden', 'parking', 
                                      'proximityFacilities', 'proximityRoads', 
-                                     'tax', 'imageURL'];
+                                     'PropertyTax', 'imageURL'];
                     
                     foreach ($requiredFields as $field) {
-                        if (!isset($_POST[$field]) || empty($_POST[$field])) {
+                        if (!isset($_POST[$field])) {
+                            error_log("Missing field: " . $field);
                             throw new Exception("Missing required field: $field");
                         }
                     }
 
-                    // Verify that the property belongs to the logged-in user
-                    $userId = SessionManager::getUserID();
-                    if (!$property->verifyPropertyOwner($userId, $_POST['propertyId'])) {
+                    // Convert string boolean values to actual booleans
+                    $garden = filter_var($_POST['garden'], FILTER_VALIDATE_BOOLEAN);
+                    $parking = filter_var($_POST['parking'], FILTER_VALIDATE_BOOLEAN);
+                    $proximityFacilities = filter_var($_POST['proximityFacilities'], FILTER_VALIDATE_BOOLEAN);
+                    $proximityRoads = filter_var($_POST['proximityRoads'], FILTER_VALIDATE_BOOLEAN);
+
+                    // Verify property belongs to current user
+                    if (!$property->verifyPropertyOwner(SessionManager::getUserID(), $_POST['propertyId'])) {
                         throw new Exception("Unauthorized access to property");
                     }
 
                     $result = $property->updateProperty(
                         $_POST['propertyId'],
                         $_POST['location'],
-                        $_POST['age'],
+                        intval($_POST['age']),
                         $_POST['floorPlan'],
-                        $_POST['bedrooms'],
-                        $_POST['bathrooms'],
-                        $_POST['garden'],
-                        $_POST['parking'],
-                        $_POST['proximityFacilities'],
-                        $_POST['proximityRoads'],
-                        $_POST['tax'],
+                        intval($_POST['bedrooms']),
+                        intval($_POST['bathrooms']),
+                        $garden,
+                        $parking,
+                        $proximityFacilities,
+                        $proximityRoads,
+                        floatval($_POST['PropertyTax']),
                         $_POST['imageURL']
                     );
                     
-                    echo json_encode([
+                    $response = [
                         'success' => $result,
                         'message' => $result ? "Property updated successfully" : "Failed to update property"
-                    ]);
+                    ];
+                    error_log("Sending response: " . print_r($response, true));
+                    echo json_encode($response);
+                    exit;
+
                 } catch (Exception $e) {
                     error_log("Error updating property: " . $e->getMessage());
                     echo json_encode([
                         'success' => false,
                         'message' => "Error updating property: " . $e->getMessage()
                     ]);
+                    exit;
                 }
                 break;
 
