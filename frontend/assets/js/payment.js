@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(data => {
                     if (data.success) {
                         alert('Payment information saved successfully!');
-                        window.location.href = '/~rreyespena1/wp/pw/p4/frontend/pages/seller/dashboard.php';
+                        window.location.href ='../pages/seller/dashboard.php';
                     } else {
                         alert(data.message);
                     }

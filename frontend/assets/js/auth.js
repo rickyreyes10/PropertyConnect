@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     .then(data => {
                         if (data.success) {
                             alert('Registration successful!');
-                            window.location.href = '/~rreyespena1/wp/pw/p4/frontend/pages/login.php';
+                            window.location.href = '../pages/login.php';
                         } else {
                             alert(data.message);
                         }
