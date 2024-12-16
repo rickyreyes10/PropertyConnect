@@ -29,6 +29,7 @@ if (!$property || $property['UserID'] != SessionManager::getUserId()) {
     header('Location: dashboard.php');
     exit;
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -50,7 +51,10 @@ if (!$property || $property['UserID'] != SessionManager::getUserId()) {
 
         <div class="property-details">
             <div class="property-image">
-                <img src="<?php echo htmlspecialchars($property['ImageURL']); ?>" alt="Property Image" onerror="this.src='../../assets/default-property.jpg';" style="width: 100%; height: auto; max-height: 400px; object-fit: cover;">
+                <img src="../../../backend/routes/imageProxy.php?url=<?php echo urlencode($property['ImageURL']); ?>" 
+                     alt="Property Image" 
+                     onerror="this.src='../../assets/default-property.jpg';" 
+                     style="width: 100%; height: auto; max-height: 400px; object-fit: cover;">
             </div>
 
             <div class="property-info">
@@ -172,11 +176,12 @@ if (!$property || $property['UserID'] != SessionManager::getUserId()) {
                 <div class="form-group">
                     <label for="imageURL">Image URL</label>
                     <input type="url" id="imageURL" name="imageURL" required 
+                           value="<?php echo htmlspecialchars($property['ImageURL']); ?>"
                            placeholder="Enter a valid image URL (e.g., https://example.com/image.jpg)"
                            pattern="https?://.+"
                            title="Please enter a valid HTTP or HTTPS image URL">
                     <small class="form-text text-muted">
-                        Tip: Right-click on an image online and select "Copy image address" to get a valid URL
+                        Please provide a direct link to an image (URL should end with .jpg, .png, .gif, etc.)
                     </small>
                 </div>
 

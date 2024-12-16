@@ -12,17 +12,11 @@ class Property {
     //this method is used to add a property to the database
     public function addProperty($userID, $location, $age, $floorPlan, $bedrooms, $bathrooms, $garden, $parking, $proximityToFacilities, $proximityToMainRoads, $propertyTax, $imageURL) {
         try {
-            // Download and store image locally
-            $imageData = file_get_contents($imageURL);
-            $fileName = uniqid() . '.jpg';
-            $localPath = '../uploads/' . $fileName;
-            file_put_contents($localPath, $imageData);
-            $imageURL = '/~pkim35/WP/PW/Project4/PropertyConnect/backend/uploads/' . $fileName;
             //prepare the SQL statement to insert a new property into the database
             $stmt = $this->conn->prepare("INSERT INTO Property (UserID, Location, Age, FloorPlan, Bedrooms, Bathrooms, Garden, Parking, ProximityFacilities, ProximityRoads, PropertyTax, ImageURL) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             
-            if (!$stmt) { //check if the statement failed
-                throw new Exception("Prepare failed: " . $this->conn->error); //throw an exception if the statement failed
+            if (!$stmt) {
+                throw new Exception("Prepare failed: " . $this->conn->error);
             }
 
             // Convert boolean values to '1' or '0' strings

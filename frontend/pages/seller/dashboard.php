@@ -54,12 +54,11 @@ $properties = $property->getPropertiesByUserId($userId);
                 
                 <?php foreach ($properties as $property): ?>
                     <div class="property-card" data-property-id="<?php echo $property['PropertyID']; ?>">
-                        <img 
-                            src="<?php echo htmlspecialchars($property['ImageURL']); ?>" 
-                            alt="Property Image" 
-                            onerror="this.src='../../assets/default-property.jpg';" 
-                            style="width: 100%; height: 200px; object-fit: cover;"
-                        >
+                        <div class="property-image">
+                            <img src="../../../backend/routes/imageProxy.php?url=<?php echo urlencode($property['ImageURL']); ?>" 
+                                 alt="Property Image" 
+                                 onerror="this.src='../../assets/default-property.jpg';">
+                        </div>
                         <div class="property-info">
                             <h3><?php echo htmlspecialchars($property['Location']); ?></h3>
                             <p class="price">$<?php echo number_format($property['PropertyTax']); ?></p>
